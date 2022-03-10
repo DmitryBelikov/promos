@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:14.2
+    environment:
+      POSTGRES_DB: "db"
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "password"
+    expose:
+      - 5432
+  app:
+    image: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DB_USER: "user"
+      DB_PASSWORD: "password"
+      DB_HOST: "postgres"
+      DB_PORT: "5432"
+      DB_NAME: "db"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
