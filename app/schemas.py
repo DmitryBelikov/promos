@@ -1,28 +1,65 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 
-class ProductBase(BaseModel):
+class PrizeBase(BaseModel):
     name: str
-    description: str
-    category_id: int
 
 
-class ProductCreate(ProductBase):
+class PrizeCreate(PrizeBase):
     class Config:
         orm_mode = True
 
 
-class Product(ProductBase):
+class Prize(PrizeBase):
     id: int
 
     class Config:
         orm_mode = True
 
 
-class Category(BaseModel):
-    id: int
+class ParticipantBase(BaseModel):
     name: str
-    products: list[Product] = []
+
+
+class ParticipantCreate(ParticipantBase):
+    class Config:
+        orm_mode = True
+
+
+class Participant(ParticipantBase):
+    id: int
 
     class Config:
         orm_mode = True
+
+
+class PromoActionBase(BaseModel):
+    name: str
+    description: Optional[str] = None
+
+
+class PromoActionCreate(PromoActionBase):
+    class Config:
+        orm_mode = True
+
+
+class PromoActionSimple(PromoActionBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+
+class PromoAction(PromoActionSimple):
+    participants: list[Participant] = []
+    prizes: list[Prize] = []
+
+    class Config:
+        orm_mode = True
+
+
+class RaffleResult(BaseModel):
+    winner: Participant
+    prize: Prize

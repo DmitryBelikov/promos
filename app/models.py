@@ -4,21 +4,28 @@ from sqlalchemy.orm import relationship
 from .database import Base
 
 
-class Category(Base):
-    __tablename__ = "categories"
+class Prize(Base):
+    __tablename__ = "prizes"
 
     id = Column(Integer, Identity(start=1), primary_key=True, index=True)
-    name = Column(String, index=True)
+    name = Column(String)
+    promo_id = Column(Integer, ForeignKey("promos.id", ondelete="CASCADE"))
 
-    products = relationship("Product", back_populates="category")
 
-
-class Product(Base):
-    __tablename__ = "products"
+class Participant(Base):
+    __tablename__ = "participants"
 
     id = Column(Integer, Identity(start=1), primary_key=True, index=True)
-    name = Column(String, index=True)
-    description = Column(String, index=True)
-    category_id = Column(Integer, ForeignKey("categories.id"))
+    name = Column(String)
+    promo_id = Column(Integer, ForeignKey("promos.id", ondelete="CASCADE"))
 
-    category = relationship("Category", back_populates="products")
+
+class PromoAction(Base):
+    __tablename__ = "promos"
+
+    id = Column(Integer, Identity(start=1), primary_key=True, index=True)
+    name = Column(String)
+    description = Column(String, nullable=True)
+
+    participants = relationship("Participant", backref="promos")
+    prizes = relationship("Prize", backref="promos")
